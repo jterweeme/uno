@@ -69,6 +69,14 @@ void Serial::myPutc(char c) const
     UDR0 = c;
 }
 
+uint8_t Serial::readByte() const
+{
+    while (!(UCSR0A & 1<<RXC0))
+        ;
+
+    return UDR0;
+}
+
 void Analog::init()
 {
     ADMUX = 1<<REFS0;

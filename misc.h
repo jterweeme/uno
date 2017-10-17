@@ -42,7 +42,10 @@ class Serial
 {
 public:
     void init() const;
+    inline void enableRead() const { UCSR0B |= 1<<RXEN0; }
+    inline void enableReadInterrupt() const { UCSR0B |= 1<<RXCIE0; }
     void myPutc(char c) const;
+    uint8_t readByte() const;
     inline void write(const char *s) const { while (*s) myPutc(*s++); }
 };
 
