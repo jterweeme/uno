@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectVersion>7.0</ProjectVersion>
     <ToolchainName>com.Atmel.AVRGCC8.CPP</ToolchainName>
-    <ProjectGuid>{64289304-8aad-4656-8a66-7ba5a18aa5f8}</ProjectGuid>
+    <ProjectGuid>{ea96cc9a-9c4a-4877-8fe3-64d72f4bba23}</ProjectGuid>
     <avrdevice>ATmega328P</avrdevice>
     <avrdeviceseries>none</avrdeviceseries>
     <OutputType>Executable</OutputType>
@@ -12,9 +12,9 @@
     <OutputFileName>$(MSBuildProjectName)</OutputFileName>
     <OutputFileExtension>.elf</OutputFileExtension>
     <OutputDirectory>$(MSBuildProjectDirectory)\$(Configuration)</OutputDirectory>
-    <AssemblyName>app_dotmatrix2</AssemblyName>
-    <Name>app_dotmatrix2</Name>
-    <RootNamespace>app_dotmatrix2</RootNamespace>
+    <AssemblyName>app_tone1</AssemblyName>
+    <Name>app_tone1</Name>
+    <RootNamespace>app_tone1</RootNamespace>
     <ToolchainFlavour>Native</ToolchainFlavour>
     <KeepTimersRunning>true</KeepTimersRunning>
     <OverrideVtor>false</OverrideVtor>
@@ -141,16 +141,9 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="app_dotmatrix2.cpp">
+    <Compile Include="app_tone1.cpp">
       <SubType>compile</SubType>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\TEMP\misc.cppproj">
-      <Name>misc</Name>
-      <Project>{39ee297a-8da6-426e-a08c-5bda13f0a553}</Project>
-      <Private>True</Private>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(AVRSTUDIO_EXE_PATH)\\Vs\\Compiler.targets" />
 </Project>

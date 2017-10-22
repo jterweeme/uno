@@ -1,60 +1,5 @@
 #include "misc.h"
 
-TSPoint TouchScreen::getPoint(Analog &analog)
-{
-    int samples[SAMPLES];
-    uint8_t valid = 1;
-    DDRC &= ~(1<<3);
-    DDRB &= ~(1<<1);
-    DDRB |= 1<<0;
-    DDRC |= 1<<2;
-    PORTB |= 1<<0;
-    PORTC &= ~(1<<2);
-
-    for (uint8_t i = 0; i < SAMPLES; i++)
-        samples[i] = analog.read(Analog::ADC3);
-
-    if (samples[0] - samples[1] < -4 || samples[0] - samples[1] > 4)
-        valid = 0;
-    else
-        samples[1] = (samples[0] + samples[1]) >> 1; // average 2 samples
-
-    //uint16_t x = 1023 - samples[2/2];
-    uint16_t x = samples[2/2] % 1024;
-    x -= 200;
-    x /= 2.9;
-    DDRB &= ~(1<<0);
-    DDRC &= ~(1<<2);
-    DDRC |= 1<<3;
-    DDRB |= 1<<1;
-    PORTB &= ~(1<<1);
-    PORTC |= 1<<3;
-
-    for (uint8_t i = 0; i < SAMPLES; i++)
-        samples[i] = analog.read(Analog::ADC2);
-
-    if (samples[0] - samples[1] < -4 || samples[0] - samples[1] > 4)
-        valid = 0;
-    else
-        samples[1] = (samples[0] + samples[1]) >> 1;
-
-    uint16_t y = 1023 - samples[SAMPLES/2];
-    y -= 90;
-    y /= 2.5;
-    DDRB |= 1<<0;       //xp
-    DDRC &= ~(1<<3);    //yp
-    PORTB &= ~(1<<0);   //xp
-    PORTB |= 1<<1;      //ym
-    uint16_t z1 = analog.read(Analog::ADC2);
-    uint16_t z2 = analog.read(Analog::ADC3);
-    uint16_t z = 1023 - (z2 - z1);
-    
-    if (!valid)
-        z = 0;
-
-    return TSPoint(x, y, z);
-}
-
 void Serial::init() const
 {
     UBRR0 = 103;    // 9600baud @16MHz
@@ -77,23 +22,88 @@ uint8_t Serial::readByte() const
     return UDR0;
 }
 
-void Analog::init()
+void Timer2::tone(uint32_t freq) const
 {
-    ADMUX = 1<<REFS0;
-    ADCSRA = 1<<ADPS2 | 1<<ADPS1 | 1<<ADPS0 | 1<<ADEN;
+    TCCR2A = 1<<WGM21 | 1<<COM2A0;
+    TCCR2B = 1<<CS22;
+    DDRB |= 1<<3;
+    uint8_t ocr;
+    uint8_t prescalarbits;
+    toneCalc(16000000, freq, ocr, prescalarbits);
+    TCCR2B = (TCCR2B & 0b11111000) | prescalarbits;
+    OCR2A = ocr;
 }
 
-uint16_t Analog::read(uint8_t input)
+void Timer1::noTone() const
 {
-    ADMUX &= ~(1<<MUX0 | 1<<MUX1 | 1<<MUX2 | 1<<MUX3); // clear mux bits
-    ADMUX |= input; // select input port
-    ADCSRA |= 1<<ADSC;
-
-    while (ADCSRA & 1<<ADSC)
-        ;
-    
-    return ADCL | (uint16_t)ADCH << 8;   
+    TCCR1A = 0;
+    PORTB &= ~(1<<1);
 }
+
+void Timer1::tone(uint32_t frequency) const
+{
+    uint8_t prescalarbits = 1<<CS10;
+    TCCR1A = 1<<COM1A0;
+    TCCR1B = 1<<WGM12 | 1<<CS10;
+    DDRB |= 1<<1;
+    uint32_t ocr = 16000000 / frequency / 2 - 1;
+    prescalarbits = 1<<CS10;    // clk/1
+
+    if (ocr > 0xffff)
+    {
+        ocr = 16000000 / frequency / 2 / 64 - 1;
+        prescalarbits = 1<<CS10 | 1<<CS11;  // clk/64
+    }
+
+    TCCR1B = (TCCR1B & 0b11111000) | prescalarbits;
+    OCR1A = ocr;
+}
+
+void Timer2::noTone() const
+{
+    TCCR2A = 0;
+    PORTB &= ~(1<<3);
+}
+
+void Timer2::toneCalc(uint32_t f_cpu, uint32_t freq, uint8_t &ocr, uint8_t &cs) const
+{
+    if (freq > 31250)
+    {
+        ocr = f_cpu / (freq << 1) - 1;
+        cs = 1<<CS20;            // clk/1 
+    }
+    else if (freq > 3907)
+    {
+        ocr = f_cpu / (freq << 4) - 1;
+        cs = 1<<CS21;                // clk/8
+    }
+    else if (freq > 977)
+    {
+        ocr = f_cpu / (freq << 6) - 1;
+        cs = 1<<CS21 | 1<<CS20;      // clk/32
+    }
+    else if (freq > 489)
+    {
+        ocr = f_cpu / (freq << 7) - 1;
+        cs = 1<<CS22;                // clk/64
+    }
+    else if (freq > 245)
+    {
+        ocr = f_cpu / (freq << 8) - 1;
+        cs = 1<<CS22 | 1<<CS20;      // clk/128
+    }
+    else if (freq > 123)
+    {
+        ocr = f_cpu / (freq << 9) - 1;
+        cs = 1<<CS22 | 1<<CS21;      // clk/256
+    }
+    else
+    {
+        ocr = f_cpu / (freq << 11) - 1;
+        cs = 1<<CS22 | 1<<CS21 | 1<<CS20;      // clk/1024
+    }
+}
+
 
 
 

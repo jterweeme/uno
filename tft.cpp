@@ -12,12 +12,21 @@
 
 static const uint16_t TFTLCD_DELAY = 0xffff;
 
+#if 0
+template <class T> static void zwap(T &a, T &b)
+{
+    T c(a);
+    a = b;
+    b = c;
+}
+#else
 void zwap(int16_t &a, int16_t &b)
 {
     int16_t c = a;
     a = b;
     b = c;
 }
+#endif
 
 int zabs(int n)
 {
