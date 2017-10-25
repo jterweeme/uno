@@ -1,18 +1,3 @@
-/*
-Plays an RTTTL ringtone on Arduino Uno Pin 11 using timer2 without interrupt
-
-CS22 CS21 CS20
-000 No clock source
-001 no prescaling
-010 clk/8
-011 clk/32
-100 clk/64
-101 clk/128
-110 clk/256
-111 clk/1024
-*/
-
-
 #include <avr/io.h>
 #include <avr/pgmspace.h>
 #include <ctype.h>
@@ -20,8 +5,8 @@ CS22 CS21 CS20
 #define F_CPU 16000000
 #include <util/delay.h>
 #include "lcd1602.h"
-#include "analog.h"
 #include "ringtone.h"
+#include "infrared.h"
 
 const char tones[] PROGMEM =
     "Indy Jones:d=4,o=5,b=250:e,8p,8f,8g,8p,1c6,8p.,d,8p,8e,1f,p.,g,8p,8a,8b,8p,"
@@ -95,54 +80,99 @@ const char tones[] PROGMEM =
     "USAnthem:d=8,o=5,b=120:e.,d,4c,4e,4g,4c6.,p,e6.,d6,4c6,"
     "4e,4f#,4g.,p,4g,4e6.,d6,4c6,2b,a,4b,c6.,16p,4c6,4g,4e,32p,4c";
 
+void foo(Ringtone &player, LCD1602 &lcd)
+{
+    lcd.clear();
+    _delay_ms(250);
+    player.next();
+    lcd.write(player.tune() + '0');
+    lcd.write(' ');
+
+    for (uint8_t i = 0; i < 10; i++)
+        lcd.write(player._title[i]);
+}
+
 int main()
 {
     LCD1602 lcd;
     lcd.init();
     Timer2 t2;
     Ringtone player(&t2, tones);
-    player.next();
     lcd.clear();
-
-    for (uint8_t i = 0; i < 10; i++)
-        lcd.write(player._title[i]);
-
-    Analog adc;
-    adc.init();
-    DFKeypad dfk(&adc);
+    foo(player, lcd);
+    IRrecv irrecv(10);
+    decode_results results;
+    irrecv.enableIRIn();
 
     while (true)
     {
-        uint8_t x = dfk.read();
-        
-        switch (x)
+
+        if (irrecv.decode(&results))
         {
-            case DFKeypad::SELECT:
-                player.play_P();
-                break;
-            case DFKeypad::DOWN:
-                lcd.clear();
-                _delay_ms(250);
-                player.skip();
-                player.next();
+            switch (results.value)
+            {
+                case RC::POWER:
+                    lcd.backlight();
+                    break;
+                case RC::PLAY:
+                    player.play_P();
+                    break;
+                case RC::NEXT:
+                    player.skip();
+                    foo(player, lcd);
+                    break;
+                case RC::PREV:
+                    player.prev();
+                    foo(player, lcd);
+                    break;
+                case RC::ROTATE:
+                    player.begin();
+                    foo(player, lcd);
+                    break;
+                case RC::N1:
+                    player.tune(1);
+                    foo(player, lcd);
+                    break;
+                case RC::N2:
+                    player.tune(2);
+                    foo(player, lcd);
+                    break;
+                case RC::N3:
+                    player.tune(3);
+                    foo(player, lcd);
+                    break;
+                case RC::N4:
+                    player.tune(4);
+                    foo(player, lcd);
+                    break;
+                case RC::N5:
+                    player.tune(5);
+                    foo(player, lcd);
+                    break;
+                case RC::N6:
+                    player.tune(6);
+                    foo(player, lcd);
+                    break;
+                case RC::N7:
+                    player.tune(7);
+                    foo(player, lcd);
+                    break;
+                case RC::N8:
+                    player.tune(8);
+                    foo(player, lcd);
+                    break;
+                case RC::N9:
+                    player.tune(9);
+                    foo(player, lcd);
+                    break;
+            }
 
-
-                for (uint8_t i = 0; i < 10; i++)
-                    lcd.write(player._title[i]);
-
-                break;
-            case DFKeypad::UP:
-                player.prev();
-                break;
-            case DFKeypad::RIGHT:
-                lcd.clear();
-                break;
+            irrecv.resume();
         }
     }
 
     return 0;
 }
-
 
 
 

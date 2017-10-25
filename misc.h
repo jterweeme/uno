@@ -24,22 +24,34 @@ public:
 class Timer
 {
 public:
-    virtual void noTone() const;
-    virtual void tone(uint32_t freq) const;
+    virtual void noToneA() const;
+    virtual void toneA(uint32_t freq) const;
+};
+
+class Timer0 : public Timer
+{
+public:
+    void noToneA() const;
+    void noToneB() const;
+    void toneA(uint32_t freq) const;
+    void toneB(uint32_t freq) const;
+    void toneCalc(uint32_t f_cpu, uint32_t freq, uint8_t &ocr, uint8_t &cs) const;
+    void pwmA(uint8_t v);
+    void pwmB(uint8_t v);
 };
 
 class Timer1 : public Timer
 {
 public:
-    void noTone() const;
-    void tone(uint32_t freq) const;
+    void noToneA() const;
+    void toneA(uint32_t freq) const;
 };
 
 class Timer2 : public Timer
 {
 public:
-    void noTone() const;
-    void tone(uint32_t freq) const;
+    void noToneA() const;
+    void toneA(uint32_t freq) const;
     void toneCalc(uint32_t f_cpu, uint32_t freq, uint8_t &ocr, uint8_t &cs) const;
 };
 

@@ -27,18 +27,18 @@
 #define LCD_BLINKOFF 0x00
 
 // flags for display/cursor shift
-#define LCD_DISPLAYMOVE 0x08
-#define LCD_CURSORMOVE 0x00
-#define LCD_MOVERIGHT 0x04
-#define LCD_MOVELEFT 0x00
+static constexpr uint8_t LCD_DISPLAYMOVE = 8;
+static constexpr uint8_t LCD_CURSORMOVE = 0;
+static constexpr uint8_t LCD_MOVERIGHT = 4;
+static constexpr uint8_t LCD_MOVELEFT = 0;
 
 // flags for function set
-static const uint8_t LCD_8BITMODE = 0x10;
-static const uint8_t LCD_4BITMODE = 0x00;
-static const uint8_t LCD_2LINE = 0x08;
-static const uint8_t LCD_1LINE = 0x00;
-static const uint8_t LCD_5x10DOTS = 0x04;
-static const uint8_t LCD_5x8DOTS = 0x00;
+static constexpr uint8_t LCD_8BITMODE = 0x10;
+static constexpr uint8_t LCD_4BITMODE = 0x00;
+static constexpr uint8_t LCD_2LINE = 0x08;
+static constexpr uint8_t LCD_1LINE = 0x00;
+static constexpr uint8_t LCD_5x10DOTS = 0x04;
+static constexpr uint8_t LCD_5x8DOTS = 0x00;
 
 class LCD1602
 {

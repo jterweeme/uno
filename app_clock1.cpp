@@ -70,22 +70,20 @@ int main()
                 pcf.alarm(false);
                 pcf.write();
                 break;
+            case DFKeypad::UP:
+                lcd.blink();
+                break;
         }
 
         pcf.gettime();
 
         if (pcf.alarm())
-            t2.tone(800);
+            t2.toneA(800);
         else
-            t2.noTone();
+            t2.noToneA();
 
         lcd.setCursor(0, 0);
         dayOfWeek(dag, pcf.dayOfWeek());
-
-        snprintf(buf, 16, "\r%s %02d/%02d/20%d%d %d", dag,
-            pcf.day(), pcf.month(), pcf.decade(), pcf.yearMod10());
-
-        serial.write(buf);
 
         snprintf(buf, 16, "%s %02d/%02d/20%d%d", dag,
             pcf.day(), pcf.month(), pcf.decade(), pcf.yearMod10());

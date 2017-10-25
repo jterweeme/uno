@@ -150,6 +150,12 @@
     <Compile Include="analog.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="button.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="button.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="glcdfont.h">
       <SubType>compile</SubType>
     </Compile>

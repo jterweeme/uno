@@ -43,91 +43,123 @@ const uint16_t notes[] PROGMEM =
     2*2489, 2*2637, 2*2794, 2*2960, 2*3136, 2*3322, 2*3520, 2*3729, 2*3951, 0
 };
 
-void Ringtone::_play(const char *p, uint8_t octave_offset, bool pgm)
+void Ringtone::prev()
 {
-    uint8_t default_dur = 4, default_oct = 6;
-    int bpm = 63, num;
-    long wholenote, duration;
-    uint8_t note, scale;
+    tune(tune() - 1);
+}
 
-    while (read_byte(p, pgm) != ':')
-        p++; // ignore name
+void Ringtone::begin()
+{
+    _tune = 0;
+    _p = _begin;
+}
 
-    if (read_byte(++p, pgm) == 'd')
+void Ringtone::tune(uint8_t t)
+{
+    begin();
+    
+    for (uint8_t i = 1; i < t; i++)
     {
-        p += 2; // skip "d="
-        num = 0;
+        skip();
+        _tune++;
+    }
+}
 
-        while (isdigit(read_byte(p, pgm)))
-            num = num * 10 + (read_byte(p++, pgm) - '0');
+void Ringtone::next()
+{
+    _tune++;
+    _readTitle();
+
+    if (read_byte(++_p, _pgm) == 'd')
+    {
+        _p += 2; // skip "d="
+        int num = 0;
+
+        while (isdigit(read_byte(_p, _pgm)))
+            num = num * 10 + (read_byte(_p++, _pgm) - '0');
 
         if (num > 0)
-            default_dur = num;
+            _dur = num;
 
-        p++; // skip comma
+        _p++; // skip comma
     }
 
-    if (read_byte(p, pgm) == 'o')
+    if (read_byte(_p, _pgm) == 'o')
     {
-        p+=2; // skip "o="
-        num = read_byte(p++, pgm) - '0';
+        _p+=2; // skip "o="
+        uint8_t num = read_byte(_p++, _pgm) - '0';
 
         if (num >= 3 && num <= 7)
-            default_oct = num;
+            _oct = num;
 
-        p++; // skip comma
+        _p++; // skip comma
     }
 
-    if (read_byte(p, pgm) == 'b')
+    if (read_byte(_p, _pgm) == 'b')
     {
-        p+=2; // skip "b="
-        num = 0;
+        _p+=2; // skip "b="
+        int num = 0;
 
-        while (isdigit(read_byte(p, pgm)))
-            num = num * 10 + (read_byte(p++, pgm) - '0');
+        while (isdigit(read_byte(_p, _pgm)))
+            num = num * 10 + (read_byte(_p++, _pgm) - '0');
 
-        bpm = num;
-        p++; // skip colon
+        _bpm = num;
+        _p++; // skip colon
     }
 
-    wholenote = (60 * 1000L / bpm) * 4; // this is the time for whole note (in milliseconds)
+}
 
-    while (read_byte(p, pgm))
+void Ringtone::_readTitle()
+{
+    uint8_t i = 0;
+
+    for (char c; (c = read_byte(_p, _pgm)) != ':'; _p++)
+        if (i < 10)
+            _title[i++] = c;
+
+    for (; i < 10; i++)
+        _title[i] = ' ';    // clear remnants of previous use
+}
+
+void Ringtone::_play()
+{
+    long wholenote = (60 * 1000L / _bpm) * 4; // this is the time for whole note (in milliseconds)
+
+    while (read_byte(_p, _pgm))
     {
-        if (read_byte(p, pgm) == '\n')
+        if (read_byte(_p, _pgm) == '\n')
             break;
 
-        num = 0;
+        int num = 0;
 
-        while (isdigit(read_byte(p, pgm)))
-            num = (num * 10) + (read_byte(p++, pgm) - '0');
+        while (isdigit(read_byte(_p, _pgm)))
+            num = (num * 10) + (read_byte(_p++, _pgm) - '0');
 
-        duration = num ? wholenote / num : wholenote / default_dur;
-        note = _noten(read_byte(p++, pgm));
+        long duration = num ? wholenote / num : wholenote / _dur;
+        uint8_t note = _noten(read_byte(_p++, _pgm));
 
-        if (read_byte(p, pgm) == '#')
+        if (read_byte(_p, _pgm) == '#')
         {
             note++;
-            p++;
+            _p++;
         }
 
-        if (read_byte(p, pgm) == '.')
+        if (read_byte(_p, _pgm) == '.')
         {
             duration += duration / 2;
-            p++;
+            _p++;
         }
 
-        scale = isdigit(read_byte(p, pgm)) ? read_byte(p++, pgm) - '0' : default_oct;
-        scale += octave_offset;
+        uint8_t scale = isdigit(read_byte(_p, _pgm)) ? read_byte(_p++, _pgm) - '0' : _oct;
 
-        if (read_byte(p, pgm) == ',')
-            p++; // skip comma for next note (or we may be at the end)
+        if (read_byte(_p, _pgm) == ',')
+            _p++; // skip comma for next note (or we may be at the end)
 
         if (note)
         {
-            _t2->tone(pgm_read_word(&notes[(scale - 4) * 12 + note]));
+            _t2->toneA(pgm_read_word(&notes[(scale - 4) * 12 + note]));
             delay(duration);
-            _t2->noTone();
+            _t2->noToneA();
         }
         else
         {

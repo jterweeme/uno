@@ -7,30 +7,12 @@
 #include <string.h>
 #include "misc.h"
 #include "analog.h"
+#include "button.h"
+#include "calc.h"
 
-class Button
+class OutputLine : public Output
 {
 private:
-    uint8_t _id = 0;
-    uint16_t _x = 0, _y = 0, _w = 0, _h = 0, _fill = 0;
-    char _label[10] = {0};
-public:
-    void id(uint8_t i) { _id = i; }
-    uint8_t id() const { return _id; }
-    void pos(uint16_t x, uint16_t y) { _x = x, _y = y; }
-    void size(uint16_t w, uint16_t h) { _w = w, _h = h; }
-    void fill(uint16_t color) { _fill = color; }
-    inline uint16_t x() const { return _x; }
-    inline uint16_t y() const { return _y; }
-    inline uint16_t w() const { return _w; }
-    inline uint16_t h() const { return _h; }
-    void draw(TFT &tft) const;
-    void label(const char *label) { strncpy(_label, label, 10); }
-    bool contains(TSPoint p) const;
-};
-
-class OutputLine
-{
     char _buffer[20] = {0};
     uint8_t _pos = 0;
     TFT *_tft;
@@ -38,10 +20,9 @@ public:
     OutputLine(TFT *tft) : _tft(tft) { }
     void clear() { _buffer[_pos = 0] = 0; redraw(); }
     void push(char c);
+    void push(const char *s) { while (*s) push(*s++); }
     void redraw();
 };
-
-
 
 class GUI
 {
@@ -62,48 +43,43 @@ public:
     static const uint8_t ID_BTNMUL = 114;
     static const uint8_t ID_BTNDIV = 115;
     static const uint8_t ID_BTNEQ = 110;
+    static const uint8_t ID_EMPTY1 = 116;
+    static const uint8_t ID_EMPTY2 = 117;
 private:
     MyArray<Button, 18> _buttons;
     OutputLine _ol;
     TFT *_tft;
+    uint16_t _prevClr = 0xf;
+    uint8_t _prevBtn = 0;
 public:
     GUI(TFT *tft) : _tft(tft), _ol(tft) { }
     void init();
+    void lightUp(uint8_t id);
     void draw();
     uint8_t id(TSPoint p) const;
 };
 
-class Calculator
+void GUI::lightUp(uint8_t id)
 {
-    int16_t _sum = 0;
-    int16_t _register = 0;
-    uint8_t _stack[50] = {0};
-    uint8_t _pos = 0;
-public:
-    void push(uint8_t n);
-};
+    _buttons.at(_prevBtn).fill(_prevClr);
+    _buttons.at(_prevBtn).draw(*_tft);
 
-void Calculator::push(uint8_t x)
-{
-    _stack[_pos++] = x;
+    for (uint8_t i = 0; i < 18; i++)
+    {
+        if (_buttons.at(i).id() == id)
+        {
+            _prevBtn = i;
+            _prevClr = _buttons.at(i).fill();
+            _buttons.at(i).fill(0xfff);
+            _buttons.at(i).draw(*_tft);
+        }
+    }
 }
 
 void OutputLine::redraw()
 {
     _tft->fillRect(0, 0, 240, 10, 0);
     _tft->drawString(240 - strlen(_buffer) * 8, 0, _buffer);
-}
-
-void Button::draw(TFT &tft) const
-{
-    tft.drawRect(_x, _y, _w, _h, 0xffff);
-    tft.fillRect(_x + 1, _y + 1, _w - 2, _h - 2, _fill);
-    tft.drawString(_x + 3, _y + 3, _label);
-}
-
-bool Button::contains(TSPoint p) const
-{
-    return p.x >= _x && p.x <= _x + _w && p.y >= _y && p.y <= _y + _h;
 }
 
 void GUI::draw()
@@ -152,14 +128,14 @@ void GUI::init()
         {5, 125, ID_BTN7, "7", 0xf},
         {90, 125, ID_BTN8, "8", 0xf},
         {175, 125, ID_BTN9, "9", 0xf},
-        {5, 175, ID_BTNADD, "*", 0xf},
+        {5, 175, ID_BTNADD, "+", 0xf},
         {90, 175, ID_BTN0, "0", 0xf},
         {175, 175, ID_BTNMIN, "-", 0xf},
         {5, 225, ID_BTNMUL, "*", 0xf},
         {90, 225, ID_BTNDIV, "/", 0xf},
-        {175, 225, 0, 0, 0xf},
+        {175, 225, ID_EMPTY1, 0, 0xf},
         {5, 275, ID_BTNC, "C", 0xf000},
-        {90, 275, 0, 0, 0xf},
+        {90, 275, ID_EMPTY2, 0, 0xf},
         {175, 275, ID_BTNEQ, "=", 0x4f00}
     };
 
@@ -188,7 +164,11 @@ int main()
     s.init();
     TouchScreen ts;
     OutputLine ol(&tft);
-    ol.push('0');
+    Calculator calc(&ol);
+    Sub sub;
+    Mul mul;
+    Div div;
+    calc.reset();
     char st[20];
     uint8_t prev_id = 0;
     uint8_t id;
@@ -203,45 +183,58 @@ int main()
         if (p.z > 200)
         {
             id = gui.id(p);
+            gui.lightUp(id);
             _delay_ms(250);
 
             switch (id)
             {
                 case GUI::ID_BTN1:
-                    ol.push('1');
+                    calc.push(1);
                     break;
                 case GUI::ID_BTN2:
-                    ol.push('2');
+                    calc.push(2);
                     break;
                 case GUI::ID_BTN3:
-                    ol.push('3');
+                    calc.push(3);
                     break;
                 case GUI::ID_BTN4:
-                    ol.push('4');
+                    calc.push(4);
                     break;
                 case GUI::ID_BTN5:
-                    ol.push('5');
+                    calc.push(5);
                     break;
                 case GUI::ID_BTN6:
-                    ol.push('6');
+                    calc.push(6);
                     break;
                 case GUI::ID_BTN7:
-                    ol.push('7');
+                    calc.push(7);
                     break;
                 case GUI::ID_BTN8:
-                    ol.push('8');
+                    calc.push(8);
                     break;
                 case GUI::ID_BTN9:
-                    ol.push('9');
+                    calc.push(9);
                     break;
                 case GUI::ID_BTN0:
-                    ol.push('0');
+                    calc.push(0);
+                    break;
+                case GUI::ID_BTNADD:
+                    calc.add();
+                    break;
+                case GUI::ID_BTNMIN:
+                    calc.op(&sub);
+                    break;
+                case GUI::ID_BTNMUL:
+                    calc.op(&mul);
+                    break;
+                case GUI::ID_BTNDIV:
+                    calc.op(&div);
                     break;
                 case GUI::ID_BTNC:
-                    ol.clear();
+                    calc.reset();
                     break;
                 case GUI::ID_BTNEQ:
-                    ol.clear();
+                    calc.equals();
                     break;
             }
         }

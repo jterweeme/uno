@@ -9,6 +9,7 @@ void LCD1602::init()
     DDRB |= 1<<0 | 1<<1 | 1<<2;
     _displayfunction = LCD_4BITMODE | LCD_1LINE | LCD_5x8DOTS;
     begin(16, 1);
+    backlight(true);
 }
 
 void LCD1602::begin(uint8_t cols, uint8_t lines, uint8_t dotsize)

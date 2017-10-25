@@ -18,12 +18,6 @@ public:
     void init();
 };
 
-class Timer0
-{
-public:
-    
-};
-
 void PS2Keyboard::init()
 {
     DDRD &= ~(1<<3);

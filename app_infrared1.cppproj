@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectVersion>7.0</ProjectVersion>
     <ToolchainName>com.Atmel.AVRGCC8.CPP</ToolchainName>
-    <ProjectGuid>{fc7e0311-c62f-40cd-bc02-e4d06ab13be8}</ProjectGuid>
+    <ProjectGuid>{617aa4ad-9727-4078-b4a5-98757aad1c88}</ProjectGuid>
     <avrdevice>ATmega328P</avrdevice>
     <avrdeviceseries>none</avrdeviceseries>
     <OutputType>Executable</OutputType>
@@ -12,9 +12,9 @@
     <OutputFileName>$(MSBuildProjectName)</OutputFileName>
     <OutputFileExtension>.elf</OutputFileExtension>
     <OutputDirectory>$(MSBuildProjectDirectory)\$(Configuration)</OutputDirectory>
-    <AssemblyName>app_calc1</AssemblyName>
-    <Name>app_calc1</Name>
-    <RootNamespace>app_calc1</RootNamespace>
+    <AssemblyName>app_infrared1</AssemblyName>
+    <Name>app_infrared1</Name>
+    <RootNamespace>app_infrared1</RootNamespace>
     <ToolchainFlavour>Native</ToolchainFlavour>
     <KeepTimersRunning>true</KeepTimersRunning>
     <OverrideVtor>false</OverrideVtor>
@@ -142,14 +142,14 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="app_calc1.cpp">
+    <Compile Include="app_infrared1.cpp">
       <SubType>compile</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\TEMP\calc.cppproj">
-      <Name>calc</Name>
-      <Project>{2a172a9f-f7ed-4a14-84e7-d600916b12e9}</Project>
+    <ProjectReference Include="..\..\TEMP\infrared.cppproj">
+      <Name>infrared</Name>
+      <Project>{ea7c0a30-67b9-4304-bbf8-703f01cbcfbf}</Project>
       <Private>True</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\TEMP\misc.cppproj">

@@ -142,9 +142,9 @@ void Rtttl::_play(const char *p, uint8_t octave_offset, bool pgm)
 
         if (note)
         {
-            _t1->tone(pgm_read_word(&notes[(scale - 4) * 12 + note]));
+            _t1->toneA(pgm_read_word(&notes[(scale - 4) * 12 + note]));
             delay(duration);
-            _t1->noTone();
+            _t1->noToneA();
         }
         else
         {
