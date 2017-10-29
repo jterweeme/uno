@@ -32,9 +32,9 @@ void EEBlock::hexDump(Serial &serial) const
         for (int j = 0; j < 16; j++)
         {
             if (isprint(ebuf[i + j]))
-                serial.myPutc(ebuf[i + j]);
+                serial.write(ebuf[i + j]);
             else
-                serial.myPutc('.');
+                serial.write('.');
         }
 
         serial.write("\r\n");

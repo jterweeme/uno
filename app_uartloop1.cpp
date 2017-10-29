@@ -31,7 +31,7 @@ int main()
     serial.enableRead();
 
     while (true)
-        serial.myPutc(convert(serial.readByte()));
+        serial.write(convert(serial.readByte()));
 
     return 0;
 }

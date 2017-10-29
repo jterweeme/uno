@@ -26,7 +26,7 @@ int main()
         if (irrecv.decode(&results))
         {
             for (int8_t i = 7; i >= 0; i--)
-                serial.myPutc(nibble(results.value >> (i << 2) & 0xf));
+                serial.write(nibble(results.value >> (i << 2) & 0xf));
 
             serial.write("\r\n");
             irrecv.resume();

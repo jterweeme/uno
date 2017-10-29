@@ -6,17 +6,17 @@
 
 Serial *g_serial;
 
-bool isUpper(char c)
+inline bool isUpper(char c)
 {
     return c >= 65 && c <= 90;
 }
 
-bool isLower(char c)
+inline bool isLower(char c)
 {
     return c >= 97 && c <= 122;
 }
 
-char convert(char c)
+inline char convert(char c)
 {
     if (isUpper(c))
         return c + 32;
@@ -29,7 +29,7 @@ char convert(char c)
 
 ISR(USART_RX_vect)
 {
-    g_serial->myPutc(convert(UDR0));
+    g_serial->write(convert(UDR0));
 }
 
 int main()

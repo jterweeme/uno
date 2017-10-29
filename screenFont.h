@@ -3,6 +3,7 @@
 
 // To save rendering time, they are ordered by line (ie. line 1, line 2) and then 
 //  indexed by character.
+#include <avr/pgmspace.h>
 
 const uint8_t screen_font [8] [256] PROGMEM = {
 // Row 1

@@ -169,7 +169,6 @@ int main()
     Mul mul;
     Div div;
     calc.reset();
-    char st[20];
     uint8_t prev_id = 0;
     uint8_t id;
     DDRB |= 1<<5;

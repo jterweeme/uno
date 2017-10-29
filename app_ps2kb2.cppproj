@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectVersion>7.0</ProjectVersion>
     <ToolchainName>com.Atmel.AVRGCC8.CPP</ToolchainName>
-    <ProjectGuid>{70a2516f-7973-4259-a22a-596ea3b9332c}</ProjectGuid>
+    <ProjectGuid>{59925ce9-376c-41e7-80a4-07dc853d9da6}</ProjectGuid>
     <avrdevice>ATmega328P</avrdevice>
     <avrdeviceseries>none</avrdeviceseries>
     <OutputType>Executable</OutputType>
@@ -12,9 +12,9 @@
     <OutputFileName>$(MSBuildProjectName)</OutputFileName>
     <OutputFileExtension>.elf</OutputFileExtension>
     <OutputDirectory>$(MSBuildProjectDirectory)\$(Configuration)</OutputDirectory>
-    <AssemblyName>app_ps2kb1</AssemblyName>
-    <Name>app_ps2kb1</Name>
-    <RootNamespace>app_ps2kb1</RootNamespace>
+    <AssemblyName>app_ps2kb2</AssemblyName>
+    <Name>app_ps2kb2</Name>
+    <RootNamespace>app_ps2kb2</RootNamespace>
     <ToolchainFlavour>Native</ToolchainFlavour>
     <KeepTimersRunning>true</KeepTimersRunning>
     <OverrideVtor>false</OverrideVtor>
@@ -142,7 +142,7 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="app_ps2kb1.cpp">
+    <Compile Include="app_ps2kb2.cpp">
       <SubType>compile</SubType>
     </Compile>
   </ItemGroup>

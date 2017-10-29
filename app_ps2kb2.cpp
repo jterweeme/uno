@@ -16,10 +16,14 @@ ISR(TIMER0_OVF_vect)
 Serial *g_serial;
 PS2Keyboard *g_kb;
 
-
 ISR(INT0_vect)
 {
     g_kb->isr();
+}
+
+inline char nibble(uint8_t n)
+{
+    return n <= 9 ? '0' + n : 'A' + n - 10;
 }
 
 int main()
@@ -38,8 +42,16 @@ int main()
 
     while (true)
     {
-        if (keyboard.available())
-            s.write(keyboard.read());
+        uint8_t x = keyboard.get_scan_code();
+
+        if (x > 0)
+        {
+            s.write(nibble(x >> 4));
+            s.write(nibble(x & 0xf));
+            s.write("\r\n");
+        }
+
+
     }
 
     return 0;

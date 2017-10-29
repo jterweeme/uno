@@ -65,21 +65,41 @@ ISR(USART_RX_vect)
 class OutputTerminal : public Output
 {
     Serial *_serial;
-    void redraw();
+
+    char _buf[20] = {0};
+    uint8_t _pos = 0;
 public:
     OutputTerminal(Serial *s) : _serial(s) { }
+    void redraw();
     void clear();
-    void push(char c) { _serial->myPutc(c); }
+    void push(char c);
 };
+
+void OutputTerminal::redraw()
+{
+    _serial->write('\r');
+
+    for (uint8_t i = 0; i <= 20 - _pos; i++)
+        _serial->write(' ');
+
+    for (uint8_t i = 0; i <= _pos; i++)
+        _serial->write(_buf[i]);
+}
+
+void OutputTerminal::push(char c)
+{
+    if (_pos >= 19)
+        return;
+
+    _buf[_pos++] = c;
+    _buf[_pos] = 0;
+    redraw();
+}
 
 void OutputTerminal::clear()
 {
-    _serial->myPutc('\r');
-    
-    for (uint8_t i = 0; i < 30; i++)
-        _serial->myPutc(' ');
-    
-    _serial->myPutc('\r');
+    _buf[_pos = 0] = 0;
+    redraw();
 }
 
 int main()

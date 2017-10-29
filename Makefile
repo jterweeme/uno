@@ -26,12 +26,17 @@ app_ringtoneir1.elf \
 app_tone1.elf \
 app_melody1.elf \
 app_ps2kb1.elf \
+app_ps2kb2.elf \
+app_ps2kb3.elf \
+app_ps2kb4.elf \
+app_ps2vga1.elf \
 app_pcf8563.elf \
 app_rgb1.elf \
 app_uartloop1.elf \
 app_uartloop2.elf \
 app_vga1.elf \
-app_vga2.elf
+app_vga2.elf \
+app_vgacalc1.elf
 
 app_7seg1.elf: app_7seg1.o
 app_aditbox.elf: app_aditbox.o tft.o misc.o analog.o button.o
@@ -53,11 +58,16 @@ app_ringtoneir1.elf: app_ringtoneir1.o misc.o lcd1602.o ringtone.o infrared.o
 app_tone1.elf: app_tone1.o
 app_pcf8563.elf: app_pcf8563.o misc.o i2c.o
 app_melody1.elf: app_melody1.o
-app_ps2kb1.elf: app_ps2kb1.o
+app_ps2kb1.elf: app_ps2kb1.o misc.o keyboard.o
+app_ps2kb2.elf: app_ps2kb2.o misc.o keyboard.o
+app_ps2kb3.elf: app_ps2kb3.o misc.o
+app_ps2kb4.elf: app_ps2kb4.o misc.o
+app_ps2vga1.elf: app_ps2vga1.o vga.o misc.o
 app_uartloop1.elf: app_uartloop1.o misc.o
 app_uartloop2.elf: app_uartloop2.o misc.o
-app_vga1.elf: app_vga1.o
+app_vga1.elf: app_vga1.o vga.o
 app_vga2.elf: app_vga2.o
+app_vgacalc1.elf: app_vgacalc1.o misc.o vga.o calc.o keyboard.o
 
 analog.o: analog.cpp analog.h
 app_7seg1.o: app_7seg1.cpp
@@ -79,20 +89,27 @@ app_ringtoneir1.o: app_ringtoneir1.cpp lcd1602.h ringtone.h misc.h infrared.h
 app_tone1.o: app_tone1.cpp
 app_melody1.o: app_melody1.cpp
 app_pcf8563.o: app_pcf8563.cpp
-app_ps2kb1.o: app_ps2kb1.cpp misc.h
+app_ps2kb1.o: app_ps2kb1.cpp misc.h keyboard.h
+app_ps2kb2.o: app_ps2kb2.cpp misc.h keyboard.h
+app_ps2kb3.o: app_ps2kb3.cpp misc.h keyboard.h
+app_ps2kb4.o: app_ps2kb4.cpp misc.h
+app_ps2vga1.o: app_ps2vga1.cpp misc.h vga.h
 app_rgb1.o: app_rgb1.cpp misc.h
 app_uartloop1.o: app_uartloop1.cpp misc.h
 app_uartloop2.o: app_uartloop2.cpp misc.h
-app_vga1.o: app_vga1.cpp
+app_vga1.o: app_vga1.cpp vga.h
 app_vga2.o: app_vga2.cpp
-button.o: button.cpp
-calc.o: calc.cpp
-infrared.o: infrared.cpp
-misc.o: misc.cpp
-tft.o: tft.cpp
-i2c.o: i2c.cpp
+app_vgacalc1.o: app_vgacalc1.cpp vga.h misc.h calc.h
+button.o: button.cpp button.h
+calc.o: calc.cpp calc.h
+infrared.o: infrared.cpp infrared.h
+keyboard.o: keyboard.cpp keyboard.h
+misc.o: misc.cpp misc.h
+tft.o: tft.cpp tft.h
+i2c.o: i2c.cpp i2c.h
 ringtone.o: ringtone.cpp ringtone.h misc.h
-lcd1602.o: lcd1602.cpp
+lcd1602.o: lcd1602.cpp lcd1602.h
+vga.o: vga.cpp vga.h
 
 clean:
 	rm -vf *.o *.gch *.elf

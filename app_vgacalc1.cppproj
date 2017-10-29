@@ -4,26 +4,28 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectVersion>7.0</ProjectVersion>
     <ToolchainName>com.Atmel.AVRGCC8.CPP</ToolchainName>
-    <ProjectGuid>{70a2516f-7973-4259-a22a-596ea3b9332c}</ProjectGuid>
+    <ProjectGuid>{35c91676-4641-49de-8018-f99b1cd97181}</ProjectGuid>
     <avrdevice>ATmega328P</avrdevice>
     <avrdeviceseries>none</avrdeviceseries>
-    <OutputType>Executable</OutputType>
+    <OutputType>StaticLibrary</OutputType>
     <Language>CPP</Language>
-    <OutputFileName>$(MSBuildProjectName)</OutputFileName>
-    <OutputFileExtension>.elf</OutputFileExtension>
+    <OutputFileName>lib$(MSBuildProjectName)</OutputFileName>
+    <OutputFileExtension>.a</OutputFileExtension>
     <OutputDirectory>$(MSBuildProjectDirectory)\$(Configuration)</OutputDirectory>
-    <AssemblyName>app_ps2kb1</AssemblyName>
-    <Name>app_ps2kb1</Name>
-    <RootNamespace>app_ps2kb1</RootNamespace>
+    <AvrGccProjectExtensions>
+    </AvrGccProjectExtensions>
+    <AssemblyName>app_vgacalc1</AssemblyName>
+    <Name>app_vgacalc1</Name>
+    <RootNamespace>app_vgacalc1</RootNamespace>
     <ToolchainFlavour>Native</ToolchainFlavour>
     <KeepTimersRunning>true</KeepTimersRunning>
     <OverrideVtor>false</OverrideVtor>
     <CacheFlash>true</CacheFlash>
     <ProgFlashFromRam>true</ProgFlashFromRam>
-    <RamSnippetAddress>0x20000000</RamSnippetAddress>
+    <RamSnippetAddress />
     <UncachedRange />
     <preserveEEPROM>true</preserveEEPROM>
-    <OverrideVtorValue>exception_table</OverrideVtorValue>
+    <OverrideVtorValue />
     <BootSegment>2</BootSegment>
     <eraseonlaunchrule>0</eraseonlaunchrule>
     <AsfFrameworkConfig>
@@ -140,13 +142,21 @@
   <avrgcccpp.assembler.debugging.DebugLevel>Default (-Wa,-g)</avrgcccpp.assembler.debugging.DebugLevel>
 </AvrGccCpp>
     </ToolchainSettings>
+    <OutputFileName>app_vgacalc1</OutputFileName>
+    <OutputFileExtension>.elf</OutputFileExtension>
+    <OutputType>Executable</OutputType>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="app_ps2kb1.cpp">
+    <Compile Include="app_vgacalc1.cpp">
       <SubType>compile</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\TEMP\calc.cppproj">
+      <Name>calc</Name>
+      <Project>{2a172a9f-f7ed-4a14-84e7-d600916b12e9}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\TEMP\keyboard.cppproj">
       <Name>keyboard</Name>
       <Project>{f62cf10a-1ae5-4dbd-a673-59852dd176f3}</Project>
@@ -155,6 +165,11 @@
     <ProjectReference Include="..\..\TEMP\misc.cppproj">
       <Name>misc</Name>
       <Project>{39ee297a-8da6-426e-a08c-5bda13f0a553}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\TEMP\vga.cppproj">
+      <Name>vga</Name>
+      <Project>{7af9568b-7996-4a88-9d6c-07502254ce64}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>

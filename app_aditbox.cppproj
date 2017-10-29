@@ -4,17 +4,19 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectVersion>7.0</ProjectVersion>
     <ToolchainName>com.Atmel.AVRGCC8.CPP</ToolchainName>
-    <ProjectGuid>{70a2516f-7973-4259-a22a-596ea3b9332c}</ProjectGuid>
+    <ProjectGuid>{5d0a6e6b-89e3-4a2c-be35-93ea4fbeaf86}</ProjectGuid>
     <avrdevice>ATmega328P</avrdevice>
     <avrdeviceseries>none</avrdeviceseries>
-    <OutputType>Executable</OutputType>
+    <OutputType>StaticLibrary</OutputType>
     <Language>CPP</Language>
-    <OutputFileName>$(MSBuildProjectName)</OutputFileName>
-    <OutputFileExtension>.elf</OutputFileExtension>
+    <OutputFileName>lib$(MSBuildProjectName)</OutputFileName>
+    <OutputFileExtension>.a</OutputFileExtension>
     <OutputDirectory>$(MSBuildProjectDirectory)\$(Configuration)</OutputDirectory>
-    <AssemblyName>app_ps2kb1</AssemblyName>
-    <Name>app_ps2kb1</Name>
-    <RootNamespace>app_ps2kb1</RootNamespace>
+    <AvrGccProjectExtensions>
+    </AvrGccProjectExtensions>
+    <AssemblyName>app_aditbox</AssemblyName>
+    <Name>app_aditbox</Name>
+    <RootNamespace>app_aditbox</RootNamespace>
     <ToolchainFlavour>Native</ToolchainFlavour>
     <KeepTimersRunning>true</KeepTimersRunning>
     <OverrideVtor>false</OverrideVtor>
@@ -140,18 +142,16 @@
   <avrgcccpp.assembler.debugging.DebugLevel>Default (-Wa,-g)</avrgcccpp.assembler.debugging.DebugLevel>
 </AvrGccCpp>
     </ToolchainSettings>
+    <OutputFileName>app_aditbox</OutputFileName>
+    <OutputFileExtension>.elf</OutputFileExtension>
+    <OutputType>Executable</OutputType>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="app_ps2kb1.cpp">
+    <Compile Include="app_aditbox.cpp">
       <SubType>compile</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\TEMP\keyboard.cppproj">
-      <Name>keyboard</Name>
-      <Project>{f62cf10a-1ae5-4dbd-a673-59852dd176f3}</Project>
-      <Private>True</Private>
-    </ProjectReference>
     <ProjectReference Include="..\..\TEMP\misc.cppproj">
       <Name>misc</Name>
       <Project>{39ee297a-8da6-426e-a08c-5bda13f0a553}</Project>

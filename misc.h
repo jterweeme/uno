@@ -10,15 +10,37 @@ template <typename T, size_t N> struct MyArray
     T &at(size_t n) const { return const_cast<T&>(elems[n]); }
 };
 
+class CircBuf
+{
+    static const uint8_t BUFFER_SIZE = 5;
+    volatile uint8_t _buf[BUFFER_SIZE];
+public:
+    volatile uint8_t head = 0, tail = 0;
+    void push(uint8_t v);
+    bool empty() const { return head == tail; }
+    uint8_t get(uint8_t pos);
+    uint8_t get();
+};
+
+class MyBitset
+{
+    uint8_t _bitcount = 0, _incoming = 0;
+public:
+    inline void reset() { _bitcount = _incoming = 0; }
+    void addBit(uint8_t val);
+    uint8_t count() const { return _bitcount; }
+    uint8_t incoming() const { return _incoming; }
+};
+
 class Serial
 {
 public:
     void init() const;
     inline void enableRead() const { UCSR0B |= 1<<RXEN0; }
     inline void enableReadInterrupt() const { UCSR0B |= 1<<RXCIE0; }
-    void myPutc(char c) const;
     uint8_t readByte() const;
-    inline void write(const char *s) const { while (*s) myPutc(*s++); }
+    void write(char c) const;
+    inline void write(const char *s) const { while (*s) write(*s++); }
 };
 
 class Timer
