@@ -1,4 +1,5 @@
 #include "misc.h"
+#include <avr/sleep.h>
 
 int main()
 {
@@ -9,7 +10,7 @@ int main()
     t2.toneA(10);  //r
 
     while (true)
-        ;
+        sleep_mode();
 
     return 0;
 }

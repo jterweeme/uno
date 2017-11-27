@@ -1,5 +1,10 @@
+/*
+hexdump van EEProm naar UART @9600 baud
+*/
+
 #include <avr/io.h>
 #include <avr/eeprom.h>
+#include <avr/sleep.h>
 #include <stdio.h>
 #include <ctype.h>
 #include "misc.h"
@@ -19,7 +24,7 @@ void EEBlock::read(const void *eeprom_addr)
 
 void EEBlock::hexDump(Serial &serial) const
 {
-    char wbuf[10];
+    char wbuf[10];  // write buffer
 
     for (int i = 0; i < 128; i += 16)
     {
@@ -54,8 +59,7 @@ int main()
     }
 
     while (true)
-    {
-    }
+        sleep_mode();
 
     return 0;
 }

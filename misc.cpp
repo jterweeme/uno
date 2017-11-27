@@ -1,4 +1,5 @@
 #include "misc.h"
+#include "uno.h"
 
 void MyBitset::addBit(uint8_t val)
 {
@@ -43,24 +44,24 @@ uint8_t CircBuf::get()
 
 void Serial::init() const
 {
-    UBRR0 = 103;    // 9600baud @16MHz
-    UCSR0B = 1<<TXEN0;
+    *pubrr0 = 103;    // 9600baud @16MHz
+    *pucsr0b = 1<<txen0;
 }
 
 void Serial::write(char c) const
 {
-    while (!(UCSR0A & (1<<UDRE0)))
+    while (!(*pucsr0a & 1<<udre0))
         ;
 
-    UDR0 = c;
+    *pudr0 = c;
 }
 
 uint8_t Serial::readByte() const
 {
-    while (!(UCSR0A & 1<<RXC0))
+    while (!(*pucsr0a & 1<<rxc0))
         ;
 
-    return UDR0;
+    return *pudr0;
 }
 
 void Timer0::noToneA() const

@@ -14,7 +14,7 @@ ISR(TIMER0_OVF_vect)
 }
 
 Serial *g_serial;
-PS2Keyboard *g_kb;
+USKeyboard *g_kb;
 
 
 ISR(INT0_vect)
@@ -32,7 +32,7 @@ int main()
     Serial s;
     s.init();
     g_serial = &s;
-    PS2Keyboard keyboard;
+    USKeyboard keyboard;
     g_kb = &keyboard;
     s.write("Keyboard Test:\r\n");
 

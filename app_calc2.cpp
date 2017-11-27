@@ -1,6 +1,7 @@
 #include "calc.h"
 #include <avr/interrupt.h>
 #include "misc.h"
+#include <avr/sleep.h>
 
 Calculator *g_calc;
 Sub sub;
@@ -92,7 +93,7 @@ void OutputTerminal::push(char c)
         return;
 
     _buf[_pos++] = c;
-    _buf[_pos] = 0;
+    _buf[_pos] = 0;     // null terminate
     redraw();
 }
 
@@ -115,7 +116,7 @@ int main()
     calc.reset();
 
     while (true)
-        ;
+        sleep_mode();
 
     return 0;
 }

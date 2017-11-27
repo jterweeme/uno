@@ -55,27 +55,28 @@ private:
 class RC
 {
 public:
-    static const uint32_t POWER = 0xe318261b;
-    static const uint32_t MODE = 0x00511dbb;
-    static const uint32_t MUTE = 0xee886d7f;
-    static const uint32_t PLAY = 0x52a3d41f;
-    static const uint32_t PREV = 0xd7e84b1b;
-    static const uint32_t NEXT = 0x20fe4dbb;
-    static const uint32_t EQ = 0xf076c13b;
-    static const uint32_t MIN = 0xa3c8eddb;
-    static const uint32_t PLUS = 0xe5cfbd7f;
-    static const uint32_t N0 = 0xc101e57b;
-    static const uint32_t ROTATE = 0x97483bfb;
-    static const uint32_t USD = 0xf0c41643;
-    static const uint32_t N1 = 0x9716be3f;
-    static const uint32_t N2 = 0x3d9ae3f7;
-    static const uint32_t N3 = 0x6182021b;
-    static const uint32_t N4 = 0x8c22657b;
-    static const uint32_t N5 = 0x488f3cbb;
-    static const uint32_t N6 = 0x0449e79f;
-    static const uint32_t N7 = 0x32c6fdf7;
-    static const uint32_t N8 = 0x1bc0157b;
-    static const uint32_t N9 = 0x3ec3fc1b;
+    static const uint32_t
+        POWER = 0xe318261b,
+        MODE = 0x00511dbb,
+        MUTE = 0xee886d7f,
+        PLAY = 0x52a3d41f,
+        PREV = 0xd7e84b1b,
+        NEXT = 0x20fe4dbb,
+        EQ = 0xf076c13b,
+        MIN = 0xa3c8eddb,
+        PLUS = 0xe5cfbd7f,
+        N0 = 0xc101e57b,
+        ROTATE = 0x97483bfb,
+        USD = 0xf0c41643,
+        N1 = 0x9716be3f,
+        N2 = 0x3d9ae3f7,
+        N3 = 0x6182021b,
+        N4 = 0x8c22657b,
+        N5 = 0x488f3cbb,
+        N6 = 0x0449e79f,
+        N7 = 0x32c6fdf7,
+        N8 = 0x1bc0157b,
+        N9 = 0x3ec3fc1b;
 };
 
 #endif

@@ -9,6 +9,7 @@
 #include "analog.h"
 #include "button.h"
 #include "calc.h"
+#include "uno.h"
 
 class OutputLine : public Output
 {
@@ -27,24 +28,24 @@ public:
 class GUI
 {
 public:
-    static const uint8_t ID_BTN1 = 101;
-    static const uint8_t ID_BTN2 = 102;
-    static const uint8_t ID_BTN3 = 103;
-    static const uint8_t ID_BTN4 = 104;
-    static const uint8_t ID_BTN5 = 105;
-    static const uint8_t ID_BTN6 = 106;
-    static const uint8_t ID_BTN7 = 107;
-    static const uint8_t ID_BTN8 = 108;
-    static const uint8_t ID_BTN9 = 109;
-    static const uint8_t ID_BTN0 = 100;
-    static const uint8_t ID_BTNC = 111;
-    static const uint8_t ID_BTNADD = 112;
-    static const uint8_t ID_BTNMIN = 113;
-    static const uint8_t ID_BTNMUL = 114;
-    static const uint8_t ID_BTNDIV = 115;
-    static const uint8_t ID_BTNEQ = 110;
-    static const uint8_t ID_EMPTY1 = 116;
-    static const uint8_t ID_EMPTY2 = 117;
+    static const uint8_t ID_BTN1 = 101,
+        ID_BTN2 = 102,
+        ID_BTN3 = 103,
+        ID_BTN4 = 104,
+        ID_BTN5 = 105,
+        ID_BTN6 = 106,
+        ID_BTN7 = 107,
+        ID_BTN8 = 108,
+        ID_BTN9 = 109,
+        ID_BTN0 = 100,
+        ID_BTNC = 111,
+        ID_BTNADD = 112,
+        ID_BTNMIN = 113,
+        ID_BTNMUL = 114,
+        ID_BTNDIV = 115,
+        ID_BTNEQ = 110,
+        ID_EMPTY1 = 116,
+        ID_EMPTY2 = 117;
 private:
     MyArray<Button, 18> _buttons;
     OutputLine _ol;
@@ -171,13 +172,13 @@ int main()
     calc.reset();
     uint8_t prev_id = 0;
     uint8_t id;
-    DDRB |= 1<<5;
+    *pddrb |= 1<<5;
 
     while (true)
     {
-        PORTB |= 1<<5;
+        *pportb |= 1<<5;
         TSPoint p = ts.getPoint(analog);
-        PORTB &= ~(1<<5);
+        *pportb &= ~(1<<5);
 
         if (p.z > 200)
         {

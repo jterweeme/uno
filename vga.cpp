@@ -1,4 +1,8 @@
-// code of Nick Gammon
+// original code by Nick Gammon, Australia
+
+// OC1B/D10: vsync 
+// OC2B/D3: hsync
+// TX0/D1: pixel
 
 #include "vga.h"
 #include <avr/interrupt.h>
@@ -15,8 +19,11 @@ ISR (TIMER2_OVF_vect)
     VGA::g_vga->hsync();
 }
 
+uint32_t g_vsync = 0;
+
 void VGA::vsync()
 {
+    g_vsync++;
     vLine = 0;
     messageLine = 0;
     backPorchLinesToGo = verticalBackPorchLines;
@@ -37,28 +44,20 @@ void VGA::hsync()
         return;
 
     // pre-load pointer for speed
-    const register uint8_t *linePtr = &screen_font[(vLine >> 1) & 0x07 ][0];
+    const register uint8_t *linePtr = &screen_font[(vLine >> 1) & 0x07][0];
     register char *messagePtr = &(_message[messageLine][0]);
-
-    // how many pixels to send
-    register uint8_t i = _cols;
-
-    // turn transmitter on 
+    register uint8_t i = _cols; // how many pixels to send
     UCSR0B = 1<<TXEN0;  // transmit enable (starts transmitting white)
 
-    // blit pixel data to screen    
     while (i--)
-        UDR0 = pgm_read_byte(linePtr + (*messagePtr++));
+        UDR0 = pgm_read_byte(linePtr + (*messagePtr++)); // blit pixel data to screen
 
     // wait till done
     while (!(UCSR0A & _BV(TXC0)))
         ;
 
-    // disable transmit
-    UCSR0B = 0;   // drop back to black
-
-    // finished this line 
-    vLine++;
+    UCSR0B = 0;   // disable transmit; drop back to black
+    vLine++;    // finished this line
 
     // every 16 pixels it is time to move to a new line in our text
     //  (because we double up the characters vertically)
@@ -101,7 +100,8 @@ void VGA::init()
     UBRR0 = 0;  // USART Baud Rate Register
     DDRD |= 1<<4;
     UCSR0B = 0;
-    UCSR0C = 1<<UMSEL00 | 1<<UMSEL01 | 1<<UCPHA0 | 1<<UCPOL0;  // Master SPI mode
+    //UCSR0C = 1<<UMSEL00 | 1<<UMSEL01 | 1<<UCPHA0 | 1<<UCPOL0;  // Master SPI mode
+    UCSR0C = 1<<UMSEL00 | 1<<UMSEL01 | 1<<UCPOL0;
 }
 
 

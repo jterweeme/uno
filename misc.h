@@ -2,6 +2,7 @@
 #define _MISC_H_
 #include <avr/io.h>
 #include <string.h>
+#include "uno.h"
 
 template <typename T, size_t N> struct MyArray
 {
@@ -36,8 +37,8 @@ class Serial
 {
 public:
     void init() const;
-    inline void enableRead() const { UCSR0B |= 1<<RXEN0; }
-    inline void enableReadInterrupt() const { UCSR0B |= 1<<RXCIE0; }
+    inline void enableRead() const { *pucsr0b |= 1<<rxen0; }
+    inline void enableReadInterrupt() const { *pucsr0b |= 1<<rxcie0; }
     uint8_t readByte() const;
     void write(char c) const;
     inline void write(const char *s) const { while (*s) write(*s++); }
@@ -77,6 +78,19 @@ public:
     void toneCalc(uint32_t f_cpu, uint32_t freq, uint8_t &ocr, uint8_t &cs) const;
 };
 
+class CType
+{
+public:
+    static inline bool isUpper(char c) { return c >= 'A' && c <= 'Z'; }
+    static inline bool isLower(char c) { return c >= 'a' && c <= 'z'; }
+    
+    static inline char convert(char c)
+    {
+        if (isUpper(c)) return c + 32;
+        if (isLower(c)) return c - 32;
+        return c;
+    }
+};
 
 #endif
 

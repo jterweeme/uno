@@ -1,4 +1,5 @@
 #include <avr/io.h>
+#include <avr/sleep.h>
 
 int main()
 {
@@ -8,7 +9,7 @@ int main()
     TCCR2B |= 1<<CS21 | 1<<CS20;
 
     while (true)
-        ;
+        sleep_mode();
 
     return 0;
 }

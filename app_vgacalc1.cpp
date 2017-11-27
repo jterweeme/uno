@@ -6,81 +6,73 @@
 #include <avr/pgmspace.h>
 #include "keyboard.h"
 
-Calculator *g_calc;
-Sub sub;
-Div div;
-Mul mul;
+static VGA vga;
+static Calculator *g_calc;
+static Sub sub;
+static Div div;
+static Mul mul;
 
-volatile uint32_t overflows0 = 0;
-
-ISR(TIMER0_OVF_vect)
-{
-    overflows0++;
-}
-
-PS2Keyboard *g_kb;
+static PS2Keyboard g_kb;
 
 ISR(INT0_vect)
 {
-    TIMSK1 &= ~(1<<TOIE1);
-    TIMSK2 &= ~(1<<TOIE2);
-    g_kb->isr();
-
-    static uint8_t state = 0;
-    uint8_t scancode = g_kb->get_scan_code();
+    TIMSK1 &= ~(1<<TOIE1);  // disable vsync interrupt
+    TIMSK2 &= ~(1<<TOIE2);  // disable hsync interrupt
+    g_kb.isr();
+    uint8_t scancode = g_kb.get_scan_code();
 
     if (scancode > 0)
     {
-            switch (scancode)
-            {
-                case PS2Keyboard::N1:
-                    g_calc->push(1);
-                    break;
-                case PS2Keyboard::N2:
-                    g_calc->push(2);
-                    break;
-                case PS2Keyboard::N3:
-                    g_calc->push(3);
-                    break;
-                case PS2Keyboard::N4:
-                    g_calc->push(4);
-                    break;
-                case PS2Keyboard::N5:
-                    g_calc->push(5);
-                    break;
-                case PS2Keyboard::N6:
-                    g_calc->push(6);
-                    break;
-                case PS2Keyboard::N7:
-                    g_calc->push(7);
-                    break;
-                case PS2Keyboard::N8:
-                    g_calc->push(8);
-                    break;
-                case PS2Keyboard::N9:
-                    g_calc->push(9);
-                    break;
-                case PS2Keyboard::N0:
-                    g_calc->push(0);
-                    break;
-                case PS2Keyboard::MINUS:
-                    g_calc->op(&sub);
-                    break;
-                case PS2Keyboard::STAR:
-                    g_calc->op(&mul);
-                    break;
-                case PS2Keyboard::SLASH:
-                    g_calc->op(&div);
-                    break;
-                case PS2Keyboard::PLUS:
-                    g_calc->add();
-                    break;
-                case PS2Keyboard::ENTER:
-                    g_calc->equals();
-                    break;
-                case PS2Keyboard::ESC:
-                    g_calc->reset();
-                    break;
+        switch (scancode)
+        {
+            case USKeyboard::N1:
+                g_calc->push(1);
+                break;
+            case USKeyboard::N2:
+                g_calc->push(2);
+                break;
+            case USKeyboard::N3:
+                g_calc->push(3);
+                break;
+            case USKeyboard::N4:
+                g_calc->push(4);
+                break;
+            case USKeyboard::N5:
+                g_calc->push(5);
+                break;
+            case USKeyboard::N6:
+                g_calc->push(6);
+                break;
+            case USKeyboard::N7:
+                g_calc->push(7);
+                break;
+            case USKeyboard::N8:
+                g_calc->push(8);
+                break;
+            case USKeyboard::N9:
+                g_calc->push(9);
+                break;
+            case USKeyboard::N0:
+                g_calc->push(0);
+                break;
+            case USKeyboard::MINUS:
+                g_calc->op(&sub);
+                break;
+            case USKeyboard::STAR:
+                g_calc->op(&mul);
+                break;
+            case USKeyboard::SLASH:
+                g_calc->op(&div);
+                break;
+            case USKeyboard::PLUS:
+                g_calc->add();
+                break;
+            case USKeyboard::ENTER:
+                g_calc->equals();
+                break;
+            case USKeyboard::ESC:
+                g_calc->reset();
+                break;
             }
     }
 
@@ -134,94 +126,15 @@ inline char nibble(uint8_t n)
 int main()
 {
     sei();
-    TCCR0A = 0;
-    TCCR0B = 1<<CS01 | 1<<CS00;
-    TCNT0 = 0;
-    TIMSK0 = 1<<TOIE0;
-    PS2Keyboard keyboard;
-    g_kb = &keyboard;
-    VGA vga;
     vga.init();
+    DummyOutput dum;
     OutputVGA cv(&vga);
     Calculator calc(&cv);
     g_calc = &calc;
     calc.reset();
 
     while (true)
-    {
         sleep_mode();
-#if 0
-        static uint8_t state = 0;
-        uint8_t scancode = keyboard.get_scan_code();
-
-        if (scancode <= 0)
-            continue;
-
-        if (scancode == 0xf0)
-        {
-            state = PS2Keyboard::BREAK;
-            continue;
-        }
-        
-        if (state == PS2Keyboard::BREAK)
-        {
-            state = 0;
-            continue;
-        }
-
-            switch (scancode)
-            {
-                case PS2Keyboard::N1:
-                    calc.push(1);
-                    break;
-                case PS2Keyboard::N2:
-                    calc.push(2);
-                    break;
-                case PS2Keyboard::N3:
-                    calc.push(3);
-                    break;
-                case PS2Keyboard::N4:
-                    calc.push(4);
-                    break;
-                case PS2Keyboard::N5:
-                    calc.push(5);
-                    break;
-                case PS2Keyboard::N6:
-                    calc.push(6);
-                    break;
-                case PS2Keyboard::N7:
-                    calc.push(7);
-                    break;
-                case PS2Keyboard::N8:
-                    calc.push(8);
-                    break;
-                case PS2Keyboard::N9:
-                    calc.push(9);
-                    break;
-                case PS2Keyboard::N0:
-                    calc.push(0);
-                    break;
-                case PS2Keyboard::MINUS:
-                    calc.op(&sub);
-                    break;
-                case PS2Keyboard::STAR:
-                    calc.op(&mul);
-                    break;
-                case PS2Keyboard::SLASH:
-                    calc.op(&div);
-                    break;
-                case PS2Keyboard::PLUS:
-                    calc.add();
-                    break;
-                case PS2Keyboard::ENTER:
-                    calc.equals();
-                    break;
-                case PS2Keyboard::ESC:
-                    calc.reset();
-                    break;
-            }
-#endif
-    }
 
     return 0;
 }

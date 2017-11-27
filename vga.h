@@ -2,14 +2,14 @@
 #define _VGA_H_
 #include <stdint.h>
 
+extern uint32_t g_vsync;
+
 class VGA
 {
 private:
     static constexpr int _cols = 20;  // 160 pixels wide
     static constexpr int verticalPixels = 480;  // 480 pixels high
-    static constexpr uint8_t _fontHeight = 8;
-    static constexpr uint8_t _fontWidth = 8;
-    static constexpr uint8_t _rows = 30;
+    static constexpr uint8_t _fontHeight = 8, _fontWidth = 8, _rows = 30;
     static constexpr int horizontalPixels = _rows * _fontWidth;
     static constexpr uint8_t verticalBackPorchLines = 35;  // includes sync pulse?
     static constexpr uint16_t verticalFrontPorchLines = 525 - verticalBackPorchLines;

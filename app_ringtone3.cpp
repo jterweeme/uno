@@ -1,5 +1,6 @@
 /*
-Plays an RTTTL ringtone on Arduino Uno Pin 11 using timer2 without interrupt
+Plays an RTTTL ringtone on Arduino Uno Pin 11 (PB2/OC2A/MOSI)
+using timer2 without interrupt
 
 CS22 CS21 CS20
 000 No clock source

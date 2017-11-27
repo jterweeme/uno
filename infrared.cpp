@@ -190,8 +190,7 @@ int  IRrecv::compare(unsigned int oldval,  unsigned int newval)
     else                            return 1 ;
 }
 
-static constexpr uint32_t FNV_PRIME_32 = 16777619;
-static constexpr uint32_t FNV_BASIS_32 = 2166136261;
+static constexpr uint32_t FNV_PRIME_32 = 16777619, FNV_BASIS_32 = 2166136261;
 
 long IRrecv::decodeHash (decode_results *results)
 {
@@ -199,13 +198,14 @@ long IRrecv::decodeHash (decode_results *results)
 
     if (results->rawlen < 6)  return false;
 
-    for (int i = 1;  (i + 2) < results->rawlen;  i++) {
-        int value =  compare(results->rawbuf[i], results->rawbuf[i+2]);
+    for (int i = 1; (i + 2) < results->rawlen;  i++)
+    {
+        int value = compare(results->rawbuf[i], results->rawbuf[i+2]);
         hash = (hash * FNV_PRIME_32) ^ value;
     }
 
-    results->value       = hash;
-    results->bits        = 32;
+    results->value = hash;
+    results->bits = 32;
     results->decode_type = UNKNOWN;
 
     return true;
