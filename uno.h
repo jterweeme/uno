@@ -3,9 +3,11 @@
 #include <stdint.h>
 
 static constexpr uint8_t
-    pinb = 0x23,
+    portb_base = 0x23,
+        pinb = portb_base,
         pinb0 = 0, pinb1 = 1, pinb2 = 2, pinb3 = 3, pinb4 = 4, pinb5 = 5, pinb6 = 6, pinb7 = 7,
-    ddrb = 0x24, ddb0 = 0, ddb1 = 1, ddb2 = 2, ddb3 = 3, ddb4 = 4, ddb5 = 5, ddb6 = 6, ddb7 = 7,
+        ddrb = portb_base + 1,
+        ddb0 = 0, ddb1 = 1, ddb2 = 2, ddb3 = 3, ddb4 = 4, ddb5 = 5, ddb6 = 6, ddb7 = 7,
     portb = 0x25, pb0 = 0, pb1 = 1, pb2 = 2, pb3 = 3, pb4 = 4, pb5 = 5, pb6 = 6, pb7 = 7,
     pinc = 0x26,
     tcnt0 = 0x26,
@@ -61,6 +63,8 @@ static volatile uint16_t
     *ptcnt1 = (volatile uint16_t * const)tcnt1,
     *pocr1a = (volatile uint16_t * const)ocr1a,
     *pubrr0 = (volatile uint16_t * const)ubrr0;
+
+
 
 #endif
 

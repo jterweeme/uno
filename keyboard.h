@@ -18,11 +18,14 @@ class PS2Keyboard
 private:
     MyBitset _bitset;
     CircBuf _buf;
+    uint32_t _timeTicks = 0;
+    uint32_t _prevTicks = 0;
 public:
     PS2Keyboard();
+    void timeTick() { _timeTicks++; }
     void isr();
     void ps2interrupt();
-    uint8_t get_scan_code();
+    uint8_t get_scan_code() { return _buf.get(); }
 };
 
 class USKeyboard : public PS2Keyboard

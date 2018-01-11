@@ -18,12 +18,13 @@ public:
 
 class PCF8563
 {
+public:
     I2CBus *_bus;
-    uint8_t _control_status_1;
-    uint8_t _control_status_2;
-    uint8_t _vl_seconds;
-    uint8_t _min;
-    uint8_t _hours;
+    uint8_t _control_status_1 = 0;
+    uint8_t _control_status_2 = 0;
+    uint8_t _vl_seconds = 0;
+    uint8_t _min = 0;
+    uint8_t _hours = 0;
     uint8_t _days;
     uint8_t _weekday;
     uint8_t _century_months;
@@ -44,11 +45,13 @@ public:
     uint8_t dayOfWeek() const { return _weekday & 7; }
     uint8_t day() const { return (_days & 0xf) + (_days >> 4 & 3) * 10; }
     uint8_t decade() const { return _years >> 4; }
-    uint8_t month() const { return _century_months % 0xf + (_century_months >> 4 & 1) * 10; }
+    uint8_t month() const { return _century_months & 0x1f; }
     uint8_t yearMod10() const { return _years & 0xf; }
     uint8_t sec() const { return (_vl_seconds >> 4 & 7) * 10 + (_vl_seconds & 0xf); }
     uint8_t min() const { return (_min >> 4 & 0x7) * 10 + (_min & 0xf); }
-    uint8_t hour() const { return (_hours >> 4 & 0x7) * 10 + (_hours & 0xf); }
+    uint8_t hour() const { return (_hours >> 4 & 0x3) * 10 + (_hours & 0xf); }
+    uint8_t alarmMin() const { return (_minute_alarm >> 4 & 0x7) * 10 + (_minute_alarm & 0xf); }
+    uint8_t alarmHour() const { return (_hour_alarm >> 4 & 0x3) * 10 + (_hour_alarm & 0xf); }
     PCF8563(I2CBus *bus) : _bus(bus) { }
     void gettime();
     void write();

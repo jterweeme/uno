@@ -1,7 +1,10 @@
 #include "lcd1602.h"
 #include <avr/io.h>
 
+#ifndef F_CPU
 #define F_CPU 16000000
+#endif
+
 #include <util/delay.h>
 
 void LCD1602::init()
@@ -23,7 +26,7 @@ void LCD1602::begin(uint8_t cols, uint8_t lines, uint8_t dotsize)
     if ((dotsize != 0) && (lines == 1))
         _displayfunction |= LCD_5x10DOTS;
 
-    _delay_us(50000);
+    _delay_ms(5);
     PORTB &= ~(1<<0);   // RS
     PORTB &= ~(1<<1);
     write4bits(0x03);
@@ -44,13 +47,13 @@ void LCD1602::begin(uint8_t cols, uint8_t lines, uint8_t dotsize)
 void LCD1602::clear()
 {
     command(LCD_CLEARDISPLAY);  // clear display, set cursor position to zero
-    _delay_us(2000);
+    _delay_ms(2);
 }
 
 void LCD1602::home()
 {
     command(LCD_RETURNHOME);  // set cursor position to zero
-    _delay_us(2000);  // this command takes a long time!
+    _delay_ms(2);  // this command takes a long time!
 }
 
 void LCD1602::setCursor(uint8_t col, uint8_t row)

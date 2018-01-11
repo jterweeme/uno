@@ -1,3 +1,8 @@
+/*
+reads out analog port 2 and prints the value
+to UART
+*/
+
 #include "analog.h"
 #include <stdio.h>
 #include "misc.h"

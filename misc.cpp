@@ -64,6 +64,19 @@ uint8_t Serial::readByte() const
     return *pudr0;
 }
 
+void Pin::direction(Direction dir)
+{
+    switch (dir)
+    {
+    case INPUT:
+        *port.direction &= ~(1<<bit);
+        break;
+    case OUTPUT:
+        *port.direction |= 1<<bit;
+        break;
+    }
+}
+
 void Timer0::noToneA() const
 {
     TCCR0A = 0;

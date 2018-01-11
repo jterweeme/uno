@@ -1,11 +1,14 @@
 #include <avr/interrupt.h>
 #include "misc.h"
 
+#ifndef F_CPU
 #define F_CPU 16000000
+#endif
+
 #include <util/delay.h>
 #include "infrared.h"
 
-inline char nibble(uint8_t n)
+static inline char nibble(uint8_t n)
 {
     return n <= 9 ? '0' + n : 'A' + n - 10;
 }

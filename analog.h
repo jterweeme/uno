@@ -5,12 +5,9 @@
 class Analog
 {
 public:
-    static const uint8_t ADC0 = 0;
-    static const uint8_t ADC1 = 1<<MUX0;
-    static const uint8_t ADC2 = 1<<MUX1;
-    static const uint8_t ADC3 = 1<<MUX0 | 1<<MUX1;
-    static const uint8_t ADC4 = 1<<MUX2;
-    static const uint8_t ADC5 = 1<<MUX1 | 1<<MUX2;
+    static constexpr uint8_t ADC0 = 0, ADC1 = 1<<MUX0, ADC2 = 1<<MUX1,
+        ADC3 = 1<<MUX0 | 1<<MUX1, ADC4 = 1<<MUX2, ADC5 = 1<<MUX0 | 1<<MUX2;
+
     void init();
     uint16_t read(uint8_t input);
 };
@@ -24,14 +21,18 @@ struct TSPoint
 
 class TouchScreen
 {
+private:
+    Analog * const _adc;
     uint16_t _threshold = 200;
 public:
+    TouchScreen(Analog *adc) : _adc(adc) { }
     static const uint8_t SAMPLES = 2;
-    TSPoint getPoint(Analog &analog);
+    TSPoint getPoint();
 };
 
 class DFKeypad
 {
+private:
     Analog *_adc;
 public:
     DFKeypad(Analog *adc) : _adc(adc) { }

@@ -53,8 +53,10 @@ int main()
     TCCR0B = 1<<CS02;
     TIMSK0 = 1<<TOIE0;
     sei();
-    Sd2Card sd;
-    sd.init(SPI_HALF_SPEED, 9);
+    Port portb((uint8_t *)portb_base);
+    Pin pin9(portb, BIT1);
+    Sd2Card sd(&pin9);
+    sd.init(SPI_HALF_SPEED);
     uint8_t buf[512];
     sd.readBlock(0, buf);
     Serial serial;

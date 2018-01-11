@@ -1,3 +1,10 @@
+/*
+PS2 scancodes naar UART
+
+PS2 DATA: D8
+PS2 CLK: D2
+*/
+
 #include "misc.h"
 #include <avr/interrupt.h>
 #include <avr/pgmspace.h>
@@ -6,15 +13,12 @@
 #include <util/delay.h>
 #include "keyboard.h"
 
-uint32_t overflows0 = 0;
+PS2Keyboard *g_kb;
 
 ISR(TIMER0_OVF_vect)
 {
-    overflows0++;
+    g_kb->timeTick();
 }
-
-Serial *g_serial;
-PS2Keyboard *g_kb;
 
 ISR(INT0_vect)
 {
@@ -33,9 +37,10 @@ int main()
     TCCR0B = 1<<CS01 | 1<<CS00;     // clk/64
     TCNT0 = 0;
     TIMSK0 = 1<<TOIE0;              // timer0 overflow generates interrupt
+    EICRA |= 1<<ISC00 | 1<<ISC01;   // ext int 0 falling edge?
+    EIMSK |= 1<<INT0;               // enable int 0
     Serial s;
     s.init();
-    g_serial = &s;
     PS2Keyboard keyboard;
     g_kb = &keyboard;
     s.write("Keyboard Test:\r\n");
